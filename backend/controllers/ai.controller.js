@@ -75,3 +75,89 @@ export const getTimeline = async (req, res, next) => {
     next(error);
   }
 };
+
+// Visa Vetting Simulator
+export const visaVetting = async (req, res, next) => {
+  try {
+    const { question, answer } = req.body;
+    
+    // Fetch profile context to make it hyper-personalized
+    const profile = await Profile.findOne({ user: req.user._id });
+    const context = profile ? `Profile: ${profile.degree} pursuing ${profile.targetCourse} in ${profile.targetCountry}. CGPA: ${profile.cgpa}.` : '';
+
+    const prompt = `
+    You are a strict international student Visa Consular Officer. 
+    Context: ${context}
+    
+    The student was asked this Visa Interview question: "${question}"
+    The user provided this answer: "${answer}"
+    
+    You must evaluate this answer based on:
+    1. Intent to return home (no strong immigration intent).
+    2. Academic clarity and legitimacy.
+    3. Financial readiness and clear sponsorship.
+    
+    Respond STRICTLY with a JSON object in this format:
+    {
+       "score": number (0 to 100),
+       "feedback": "constructive harsh feedback on what they said wrong or right",
+       "improvement": "an example of a better way to phrase their answer"
+    }
+    CRITICAL: Output ONLY the JSON block.
+    `;
+
+    const aiResponse = await generateAIResponse(prompt);
+    
+    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("Invalid AI formatting");
+    
+    const evaluation = JSON.parse(jsonMatch[0]);
+
+    res.status(200).json({
+      success: true,
+      evaluation
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Hidden Costs Analyzer
+export const hiddenCosts = async (req, res, next) => {
+  try {
+    const { targetCountry, targetCourse } = req.body;
+    
+    const prompt = `
+    You are an expert international student financial advisor.
+    The student is going to study ${targetCourse || 'Higher Education'} in ${targetCountry || 'Abroad'}.
+    
+    Identify 5 highly specific "Hidden Costs" or "Upfront pre-arrival costs" (like Immigration Surcharges, Flight baggage, Housing deposits, winter wear) that are NOT tuition and NOT basic monthly rent, specific to ${targetCountry || 'this destination'}.
+    
+    Provide all cost estimates purely as numerical types (numbers, no currency signs) representing values in USD.
+
+    Respond STRICTLY with a JSON object in this format:
+    {
+      "totalEstimatedHiddenUSD": number,
+      "stressLevel": "Low|Medium|High",
+      "items": [
+        { "name": "Item Name", "costUSD": number, "reason": "why they need it" }
+      ]
+    }
+    CRITICAL: Output ONLY the JSON block.
+    `;
+
+    const aiResponse = await generateAIResponse(prompt);
+    
+    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("Invalid AI formatting");
+    
+    const analysis = JSON.parse(jsonMatch[0]);
+
+    res.status(200).json({
+      success: true,
+      analysis
+    });
+  } catch (error) {
+    next(error);
+  }
+};

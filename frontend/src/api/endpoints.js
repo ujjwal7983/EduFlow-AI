@@ -14,13 +14,13 @@ export const ENDPOINTS = {
     TIMELINE: `${API_BASE_URL}/ai/timeline`,
     ROI: `${API_BASE_URL}/ai/roi`,
     RECOMMENDATION: `${API_BASE_URL}/ai/recommendation`,
+    VISA_VETTING: `${API_BASE_URL}/ai/visa-vetting`,
+    HIDDEN_COSTS: `${API_BASE_URL}/ai/hidden-costs`,
   },
   LOANS: {
     ELIGIBILITY: `${API_BASE_URL}/loan/eligibility`,
     APPLY: `${API_BASE_URL}/loan/apply`,
     OFFERS: `${API_BASE_URL}/loan/offers`,
-  },
-  USER: {
-    PROFILE: '/user/profile',
+    RECOMMENDATIONS: `${API_BASE_URL}/loan/recommendations`,
   }
 };

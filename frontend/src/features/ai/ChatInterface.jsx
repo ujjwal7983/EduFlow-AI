@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Send, Bot, Sparkles } from 'lucide-react';
 import api from '../../api/axios';
 import { ENDPOINTS } from '../../api/endpoints';
@@ -12,7 +13,7 @@ const ChatInterface = () => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
   useEffect(() => {
@@ -69,15 +70,15 @@ const ChatInterface = () => {
               </div>
             )}
             <div 
-              className={`max-w-[75%] px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed prose prose-sm dark:prose-invert ${
                 msg.role === 'user' 
-                  ? 'bg-[var(--accent-blue)] text-white rounded-2xl rounded-br-sm shadow-sm' 
+                  ? 'bg-[var(--accent-blue)] text-white rounded-2xl rounded-br-sm shadow-sm prose-p:text-white prose-headings:text-white prose-strong:text-white' 
                   : msg.role === 'error'
                   ? 'bg-red-500/10 text-red-500 rounded-2xl rounded-bl-sm border border-red-500/20'
                   : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] rounded-2xl rounded-bl-sm border border-[var(--border-color)] shadow-sm'
               }`}
             >
-              {msg.text}
+              <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
           </div>
         ))}

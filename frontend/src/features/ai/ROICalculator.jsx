@@ -89,7 +89,7 @@ const ROICalculator = () => {
             <h3 className="text-lg font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)] pb-2">
               Investment Factors
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Total Course Tuition ({getSymbol()})</label>
                 <div className="relative">
@@ -101,7 +101,7 @@ const ROICalculator = () => {
                     name="courseTuition"
                     value={formData.courseTuition}
                     onChange={handleChange}
-                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] focus:border-[var(--accent-blue)] outline-none transition-shadow"
+                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] outline-none transition-shadow"
                     placeholder="45000"
                     required
                   />
@@ -115,11 +115,11 @@ const ROICalculator = () => {
                   step="0.5"
                   value={formData.courseDurationYears}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] focus:border-[var(--accent-blue)] outline-none transition-shadow"
+                  className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] outline-none transition-shadow"
                   required
                 />
               </div>
-              <div className="sm:col-span-2">
+              <div>
                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Living Cost per Year ({getSymbol()})</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-muted)] font-medium">
@@ -130,7 +130,7 @@ const ROICalculator = () => {
                     name="livingCostPerYear"
                     value={formData.livingCostPerYear}
                     onChange={handleChange}
-                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] focus:border-[var(--accent-blue)] outline-none transition-shadow"
+                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] outline-none transition-shadow"
                     placeholder="15000"
                     required
                   />
@@ -143,7 +143,7 @@ const ROICalculator = () => {
             <h3 className="text-lg font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)] pb-2">
               Career Trajectory
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Current Salary / Opp. Cost ({getSymbol()})</label>
                 <div className="relative">
@@ -155,7 +155,7 @@ const ROICalculator = () => {
                     name="currentSalary"
                     value={formData.currentSalary}
                     onChange={handleChange}
-                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] focus:border-[var(--accent-blue)] outline-none transition-shadow"
+                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] outline-none transition-shadow"
                   />
                 </div>
               </div>
@@ -170,7 +170,7 @@ const ROICalculator = () => {
                     name="expectedStartingSalary"
                     value={formData.expectedStartingSalary}
                     onChange={handleChange}
-                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] focus:border-[var(--accent-blue)] outline-none transition-shadow"
+                    className="pl-10 w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-blue)] outline-none transition-shadow"
                     placeholder="90000"
                     required
                   />
