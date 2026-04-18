@@ -39,8 +39,17 @@ export const getCareerAdvice = async (req, res, next) => {
 export const chatbot = async (req, res, next) => {
   try {
     const { message } = req.body;
+    
+    // Fetch profile context
+    const profile = await Profile.findOne({ user: req.user._id });
+    let context = "";
+    if (profile) {
+      const countries = Array.isArray(profile.targetCountry) ? profile.targetCountry.join(', ') : profile.targetCountry;
+      context = `[SYSTEM CONTEXT: The user has a ${profile.degree || 'degree'} with a CGPA of ${profile.cgpa || 'unknown'} (Scale ${profile.cgpaScale || 4.0}). They are targeting ${profile.targetCourse || 'unknown course'} in ${countries || 'various locations'}]. `;
+    }
 
-    const reply = await generateAIResponse(message);
+    const fullPrompt = `${context}\nUser Message: ${message}`;
+    const reply = await generateAIResponse(fullPrompt);
 
     res.status(200).json({
       success: true,

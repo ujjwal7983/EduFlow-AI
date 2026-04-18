@@ -12,9 +12,13 @@ const profileSchema = new mongoose.Schema(
     degree: String,
     field: String,
     cgpa: Number,
+    cgpaScale: {
+      type: Number,
+      default: 4.0,
+    },
 
     // Study plans
-    targetCountry: String,
+    targetCountry: [String],
     targetCourse: String,
 
     // Financial
