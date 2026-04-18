@@ -6,7 +6,7 @@ import { getTimeline } from "../controllers/ai.controller.js";
 const router = express.Router();
 
 router.get("/career", protect, getCareerAdvice);
-router.post("/chat", chatbot);
+router.post("/chat", protect, chatbot);
 router.post("/timeline", protect, getTimeline);
 
 export default router;
