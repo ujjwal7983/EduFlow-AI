@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Send, Bot, Sparkles } from 'lucide-react';
+import { Send, Bot, Sparkles, AlertTriangle } from 'lucide-react';
 import api from '../../api/axios';
 import { ENDPOINTS } from '../../api/endpoints';
 
@@ -10,6 +10,7 @@ const ChatInterface = () => {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [apiErrorPopup, setApiErrorPopup] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -28,21 +29,22 @@ const ChatInterface = () => {
     setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
     setInput('');
     setIsLoading(true);
+    setApiErrorPopup(false);
 
     try {
-      const response = await api.post(ENDPOINTS.AI.CHAT, { message: userMessage }).catch(() => null);
+      const response = await api.post(ENDPOINTS.AI.CHAT, { message: userMessage }).catch(err => err.response);
 
       if (response && response.data?.success) {
         setMessages(prev => [...prev, { role: 'ai', text: response.data.reply }]);
       } else {
-        // Mock fallback if api fails
-        setTimeout(() => {
-           setMessages(prev => [...prev, { role: 'ai', text: 'I understand you are thinking about your career. Let me help you analyze your ROI and Timeline using our dedicated tools!' }]);
-           setIsLoading(false);
-        }, 1500);
-        return;
+        // Show popup instead of mock fallback if API fails
+        setApiErrorPopup(true);
+        setTimeout(() => setApiErrorPopup(false), 5000);
+        setMessages(prev => [...prev, { role: 'error', text: 'Failed to generate response. The API limit may have been reached.' }]);
       }
     } catch (error) {
+      setApiErrorPopup(true);
+      setTimeout(() => setApiErrorPopup(false), 5000);
       setMessages(prev => [...prev, { role: 'error', text: 'Network error. Make sure the backend is running.' }]);
     } finally {
       setIsLoading(false);
@@ -61,7 +63,14 @@ const ChatInterface = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--bg-primary)]/30">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--bg-primary)]/30 relative">
+        
+        {/* API limit popup */}
+        <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${apiErrorPopup ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
+           <div className="bg-red-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-bold border border-red-400">
+             <AlertTriangle className="w-4 h-4" /> API Limit Reached
+           </div>
+        </div>
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role !== 'user' && (

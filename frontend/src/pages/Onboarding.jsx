@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, MapPin, GraduationCap, Briefcase, ArrowRight } from 'lucide-react';
+import { Sparkles, MapPin, GraduationCap, Briefcase, ArrowRight, Globe, Calendar } from 'lucide-react';
 import api from '../api/axios';
 import { ENDPOINTS } from '../api/endpoints';
 
@@ -22,15 +22,18 @@ const POPULAR_COURSES = [
 const DESTINATIONS = ["USA", "UK", "Canada", "Germany", "Australia", "India", "Singapore", "Ireland"];
 
 const Onboarding = () => {
-  const { updateProfile } = useAuth();
+  const { updateProfile, profile } = useAuth();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
-    degree: '',
-    cgpa: '',
-    cgpaScale: '4.0',
-    targetCourse: '',
-    targetCountry: [],
+    degree: profile?.degree || '',
+    cgpa: profile?.cgpa || '',
+    cgpaScale: profile?.cgpaScale || '4.0',
+    targetCourse: profile?.targetCourse || '',
+    targetCountry: profile?.targetCountry || [],
+    residentCountry: profile?.residentCountry || 'India',
+    experienceYears: profile?.experienceYears != null ? profile.experienceYears : '',
+    enrollmentYear: profile?.enrollmentYear || new Date().getFullYear() + 1
   });
 
   const [loading, setLoading] = useState(false);
@@ -59,7 +62,10 @@ const Onboarding = () => {
         cgpa: parseFloat(formData.cgpa) || null,
         cgpaScale: parseFloat(formData.cgpaScale),
         targetCourse: formData.targetCourse,
-        targetCountry: formData.targetCountry
+        targetCountry: formData.targetCountry,
+        residentCountry: formData.residentCountry,
+        experienceYears: formData.experienceYears === '' ? 0 : parseInt(formData.experienceYears),
+        enrollmentYear: parseInt(formData.enrollmentYear)
       });
       
       if (response.data?.success) {
@@ -137,6 +143,53 @@ const Onboarding = () => {
                   <option value="" disabled>Select a course</option>
                   {POPULAR_COURSES.map(course => <option key={course} value={course}>{course}</option>)}
                 </select>
+              </div>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Resident Country</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-muted)]">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <select
+                  name="residentCountry" required value={formData.residentCountry} onChange={handleChange}
+                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl focus:ring-2 focus:ring-[var(--accent-orange)] outline-none transition-all shadow-sm appearance-none"
+                >
+                  <option value="India">India</option>
+                  <option value="China">China</option>
+                  <option value="Nigeria">Nigeria</option>
+                  <option value="EU/UK">EU / UK</option>
+                  <option value="USA/Canada">USA / Canada</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 sm:col-span-2">
+              <div>
+                <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Work Exp. (Yrs)</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-muted)]">
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <input 
+                    type="number" name="experienceYears" min="0" max="30" placeholder="0" value={formData.experienceYears} onChange={handleChange}
+                    className="w-full pl-12 pr-4 py-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl focus:ring-2 focus:ring-[var(--accent-orange)] outline-none transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Enrollment Year</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-muted)]">
+                    <Calendar className="w-5 h-5" />
+                  </div>
+                  <input 
+                    type="number" name="enrollmentYear" required placeholder="YYYY" value={formData.enrollmentYear} onChange={handleChange}
+                    className="w-full pl-12 pr-4 py-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl focus:ring-2 focus:ring-[var(--accent-orange)] outline-none transition-all shadow-sm"
+                  />
+                </div>
               </div>
             </div>
 

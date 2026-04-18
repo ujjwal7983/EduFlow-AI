@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { LayoutDashboard, Sparkles, User, CreditCard, LogOut, Moon, Sun, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Sparkles, User, CreditCard, LogOut, Moon, Sun, Menu, X, GraduationCap } from 'lucide-react';
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -12,6 +12,7 @@ const Layout = ({ children }) => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+    { name: 'Universities', path: '/universities', icon: <GraduationCap size={20} /> },
     { name: 'AI Tools', path: '/ai-tools', icon: <Sparkles size={20} /> },
     { name: 'Profile', path: '/profile', icon: <User size={20} /> },
     { name: 'Loans', path: '/loans', icon: <CreditCard size={20} /> },

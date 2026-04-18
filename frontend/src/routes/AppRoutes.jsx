@@ -11,6 +11,7 @@ import AiTools from '../pages/AiTools';
 import Profile from '../pages/Profile';
 import Loans from '../pages/Loans';
 import Onboarding from '../pages/Onboarding';
+import Universities from '../pages/Universities';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -75,6 +76,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Loans />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/universities" 
+        element={
+          <ProtectedRoute>
+            <Universities />
           </ProtectedRoute>
         } 
       />

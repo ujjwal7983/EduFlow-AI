@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Award, Zap } from 'lucide-react';
 
 const ProfileScoreCard = ({ score = 0, lastUpdated }) => {
+  const navigate = useNavigate();
+  
   // Determine color based on score
   const colorClass = score >= 85 ? 'text-emerald-500' : score >= 65 ? 'text-blue-500' : 'text-amber-500';
   const bgClass = score >= 85 ? 'bg-emerald-500' : score >= 65 ? 'bg-blue-500' : 'bg-amber-500';
@@ -28,7 +31,7 @@ const ProfileScoreCard = ({ score = 0, lastUpdated }) => {
         Last updated {lastUpdated || 'just now'}
       </p>
       
-      <button className="mt-5 w-full flex items-center justify-center gap-2 text-sm font-medium border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--accent-light)] text-[var(--text-primary)] py-2.5 rounded-xl transition-colors">
+      <button onClick={() => navigate('/onboarding')} className="mt-5 w-full flex items-center justify-center gap-2 text-sm font-medium border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--accent-light)] text-[var(--text-primary)] py-2.5 rounded-xl transition-colors">
         <Zap className="w-4 h-4 text-[var(--accent-yellow)]" /> Boost Score
       </button>
     </div>

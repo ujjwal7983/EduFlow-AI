@@ -16,6 +16,7 @@ export const ENDPOINTS = {
     RECOMMENDATION: `${API_BASE_URL}/ai/recommendation`,
     VISA_VETTING: `${API_BASE_URL}/ai/visa-vetting`,
     HIDDEN_COSTS: `${API_BASE_URL}/ai/hidden-costs`,
+    UNIVERSITY_MATCH: `${API_BASE_URL}/ai/university-predictor`,
   },
   LOANS: {
     ELIGIBILITY: `${API_BASE_URL}/loan/eligibility`,

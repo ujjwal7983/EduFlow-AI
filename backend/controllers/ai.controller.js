@@ -161,3 +161,60 @@ export const hiddenCosts = async (req, res, next) => {
     next(error);
   }
 };
+
+// University Admission Predictor
+export const universityPredictor = async (req, res, next) => {
+  try {
+    const { cgpa, cgpaScale, targetCourse, targetCountry, budget } = req.body;
+    
+    // Normalize CGPA roughly
+    const scale = cgpaScale || 4.0;
+    const currentGpa = cgpa || (0.75 * scale); // default to 75%
+    
+    const prompt = `
+    Act as a Predictive Admissions Algorithm for International Students.
+    
+    Student Profile:
+    - Target Course/Major: ${targetCourse || 'General Study'}
+    - Target Country/Region: ${targetCountry || 'Global'}
+    - CGPA: ${currentGpa} out of ${scale}
+    - Max Budget (Tuition): $${budget || 50000} USD
+    
+    Task:
+    1. Search your knowledge base for 5 actual universities in ${targetCountry || 'top study destinations'} offering ${targetCourse || 'relevant degrees'}.
+    2. Filter out programs where estimated tuition vastly exceeds $${budget || 50000} USD.
+    3. Calculate an EXACT fractional "probabilityScore" (0 to 100) based on their CGPA (${currentGpa}/${scale}) compared to the historical average GPA of admitted students at each university. Be highly realistic (e.g. Ivy Leagues should be < 20% for average GPAs).
+    4. Categorize strictly as: "Safe" (probability > 75), "Target" (probability 40-75), or "Reach" (probability < 40).
+    
+    Respond STRICTLY with a JSON object in this format:
+    {
+      "recommendations": [
+        {
+          "name": "University Name",
+          "location": "City, Country",
+          "category": "Reach|Target|Safe",
+          "probabilityScore": number,
+          "estimatedTuitionUSD": number,
+          "whyGoodFit": "A 1-sentence analytical reason",
+          "applicationDifficulty": "Low|Medium|High|Very High"
+        }
+      ]
+    }
+    CRITICAL: Output ONLY the JSON block. Do not include markdown formatting.
+    `;
+
+    const aiResponse = await generateAIResponse(prompt);
+    
+    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("Invalid AI formatting");
+    
+    const prediction = JSON.parse(jsonMatch[0]);
+
+    res.status(200).json({
+      success: true,
+      prediction
+    });
+  } catch (error) {
+    next(error);
+  }
+};

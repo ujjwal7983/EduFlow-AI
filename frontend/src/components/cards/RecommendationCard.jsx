@@ -1,7 +1,11 @@
 import React from 'react';
 import { Sparkles, MapPin, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const RecommendationCard = ({ type = 'university', title, location, description, matchPercent, tags = [], linkUrl }) => {
+  const isExternal = linkUrl && linkUrl.startsWith('http');
+  const linkClasses = "flex items-center justify-center gap-2 w-full py-2 bg-[var(--bg-secondary)] hover:bg-[var(--accent-light)] text-[var(--accent-blue)] font-medium rounded-xl transition-colors";
+
   return (
     <div className="glass-card-vibrant border border-[var(--border-color)] p-5 rounded-2xl shadow-sm hover:shadow-md transition-shadow group relative flex flex-col h-full">
       <div className="flex justify-between items-start mb-3">
@@ -36,9 +40,15 @@ const RecommendationCard = ({ type = 'university', title, location, description,
       </div>
 
       <div className="pt-4 border-t border-[var(--border-color)] mt-auto">
-        <a href={linkUrl || '#'} className="flex items-center justify-center gap-2 w-full py-2 bg-[var(--bg-secondary)] hover:bg-[var(--accent-light)] text-[var(--accent-blue)] font-medium rounded-xl transition-colors">
-          View Details <ExternalLink className="w-4 h-4" />
-        </a>
+        {isExternal ? (
+          <a href={linkUrl} target="_blank" rel="noopener noreferrer" className={linkClasses}>
+            View Details <ExternalLink className="w-4 h-4" />
+          </a>
+        ) : (
+          <Link to={linkUrl || '#'} className={linkClasses}>
+            View Details <ExternalLink className="w-4 h-4" />
+          </Link>
+        )}
       </div>
     </div>
   );

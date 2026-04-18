@@ -20,6 +20,8 @@ const profileSchema = new mongoose.Schema(
     // Study plans
     targetCountry: [String],
     targetCourse: String,
+    residentCountry: String,
+    enrollmentYear: Number,
 
     // Financial
     budget: Number,

@@ -119,7 +119,13 @@ export const generateUniversityMatches = (profile) => {
   }
 
   // Shuffle or just pick top 2
-  return results.slice(0, 2);
+  const selectedResults = results.slice(0, 2);
+  
+  // Inject proper Google Search linkUrl
+  return selectedResults.map(uni => ({
+    ...uni,
+    linkUrl: `https://www.google.com/search?q=${encodeURIComponent(uni.title + " admissions international students")}`
+  }));
 };
 
 export const generateNudges = (profile) => {
@@ -138,7 +144,7 @@ export const generateNudges = (profile) => {
          description: "Most top US universities required or recommend GRE scores. Establish your baseline.",
          timeRemaining: "This Week",
          linkText: "View resources",
-         linkUrl: "#"
+         linkUrl: "https://www.ets.org/gre/"
       });
    } else if (countries.includes("UK") || countries.includes("Australia") || countries.includes("Canada")) {
       nudges.push({
@@ -146,7 +152,7 @@ export const generateNudges = (profile) => {
          description: "English proficiency is mandatory. Secure your testing date early.",
          timeRemaining: "Next 14 Days",
          linkText: "Check Dates",
-         linkUrl: "#"
+         linkUrl: "https://www.ets.org/toefl/"
       });
    } else if (countries.includes("Germany")) {
       nudges.push({
@@ -154,14 +160,14 @@ export const generateNudges = (profile) => {
          description: "Germany requires an APS certificate for Indian students. Process takes months.",
          timeRemaining: "Urgent",
          linkText: "Learn More",
-         linkUrl: "#"
+         linkUrl: "https://aps-india.de/"
       });
    } else {
       nudges.push({
          title: "Draft Statement of Purpose",
          description: "Start outlining your SOP early to allow multiple reviews by mentors.",
          linkText: "View AI Templates",
-         linkUrl: "#"
+         linkUrl: "/ai-tools"
       });
    }
    
@@ -170,7 +176,7 @@ export const generateNudges = (profile) => {
          title: "Focus on Co-curriculars",
          description: "To balance your academic score, consider certifications or projects.",
          linkText: "Find Projects",
-         linkUrl: "#"
+         linkUrl: "/ai-tools"
       });
    } else {
       nudges.push({
@@ -178,7 +184,7 @@ export const generateNudges = (profile) => {
          description: "Your grade profile makes you competitive for merit scholarships. Start shortlisting.",
          timeRemaining: "Available Now",
          linkText: "View Matches",
-         linkUrl: "#"
+         linkUrl: "/loans"
       });
    }
    

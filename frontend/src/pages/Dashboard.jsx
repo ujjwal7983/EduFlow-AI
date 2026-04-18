@@ -86,7 +86,7 @@ const Dashboard = () => {
                    View all <ChevronRight className="w-4 h-4" />
                  </Link>
                </div>
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                  {recommendedUniversities.map((uni, idx) => (
                    <RecommendationCard 
                      key={idx}
@@ -95,6 +95,7 @@ const Dashboard = () => {
                      matchPercent={uni.matchPercent} 
                      description={uni.description}
                      tags={uni.tags}
+                     linkUrl={uni.linkUrl}
                    />
                  ))}
                </div>

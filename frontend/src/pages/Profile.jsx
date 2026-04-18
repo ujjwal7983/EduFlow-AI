@@ -1,11 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
-import { MapPin, GraduationCap, Map, Edit, Briefcase } from 'lucide-react';
+import { MapPin, GraduationCap, Map, Edit, Briefcase, Globe, Calendar } from 'lucide-react';
 import ProfileScoreCard from '../components/cards/ProfileScoreCard';
 
 const Profile = () => {
   const { user, profile } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <Layout>
@@ -13,7 +15,7 @@ const Profile = () => {
         
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">Student Profile</h1>
-          <button className="bg-[var(--bg-secondary)] border border-[var(--border-color)] hover:border-[var(--accent-orange)] text-[var(--text-primary)] px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all shadow-sm dynamic-icon-hover">
+          <button onClick={() => navigate('/onboarding')} className="bg-[var(--bg-secondary)] border border-[var(--border-color)] hover:border-[var(--accent-orange)] text-[var(--text-primary)] px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all shadow-sm dynamic-icon-hover">
             <Edit className="w-4 h-4" /> Edit Profile
           </button>
         </div>
@@ -65,6 +67,32 @@ const Profile = () => {
                       <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Target Location</div>
                       <div className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
                          <MapPin className="w-4 h-4 text-[var(--accent-blue)]" /> {(profile?.targetCountry && profile?.targetCountry.length > 0) ? (Array.isArray(profile.targetCountry) ? profile.targetCountry.join(', ') : profile.targetCountry) : 'Open to Options'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-[var(--text-primary)]">
+                    <Globe className="w-5 h-5 text-emerald-500" /> Personal Background
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-[var(--bg-secondary)] p-5 rounded-xl border border-[var(--border-color)] shadow-sm">
+                    <div>
+                      <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Resident Country</div>
+                      <div className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Globe className="w-4 h-4 text-emerald-500" /> {profile?.residentCountry || 'Not Provided'}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Work Exp.</div>
+                      <div className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Briefcase className="w-4 h-4 text-[var(--accent-primary)]" /> {profile?.experienceYears != null ? `${profile.experienceYears} Years` : '0 Years'}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Enrollment</div>
+                      <div className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Calendar className="w-4 h-4 text-[var(--accent-yellow)]" /> {profile?.enrollmentYear || 'Not Provided'}
                       </div>
                     </div>
                   </div>
