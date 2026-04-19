@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../components/Layout';
 import ChatInterface from '../features/ai/ChatInterface';
-import ROICalculator from '../features/ai/ROICalculator';
+import FinancialTwin from '../features/ai/FinancialTwin';
 import TimelineGenerator from '../features/ai/TimelineGenerator';
 import VisaSimulator from '../features/ai/VisaSimulator';
 import HiddenCostsAnalyzer from '../features/ai/HiddenCostsAnalyzer';
@@ -19,9 +19,9 @@ const AiTools = () => {
         <div className="grid lg:grid-cols-12 gap-8">
            {/* Primary Column - Financials & Timeline */}
            <div className="lg:col-span-8 space-y-8">
-             {/* ROI Calculator needs wide horizontal space */}
+             {/* Financial Twin Interactive Playground */}
              <div className="w-full">
-                <ROICalculator />
+                <FinancialTwin />
              </div>
              
              {/* Secondary Tools can be split */}

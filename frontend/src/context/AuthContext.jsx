@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api/axios';
+import { ENDPOINTS } from '../api/endpoints';
 
 const AuthContext = createContext();
 
@@ -17,13 +19,10 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', token);
         try {
           // Verify token and fetch profile
-          const response = await fetch('http://localhost:5000/api/user/profile', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
+          const response = await api.get(ENDPOINTS.USER.PROFILE).catch(() => null);
           
-          if(response.ok) {
-            const data = await response.json();
-            setProfile(data.profile || null);
+          if(response && response.data) {
+            setProfile(response.data.profile || null);
             // In a full app, user obj is returned from /me. Hardcode spoof for now if missing.
             if(!user) setUser({ name: 'Scholar', email: 'user@example.com' });
           } else {
@@ -53,13 +52,10 @@ export const AuthProvider = ({ children }) => {
 
     if (!userProfile && authToken) {
       try {
-        const response = await fetch('http://localhost:5000/api/user/profile', {
-          headers: { 'Authorization': `Bearer ${authToken}` }
-        }).catch(() => null);
+        const response = await api.get(ENDPOINTS.USER.PROFILE).catch(() => null);
         
-        if(response && response.ok) {
-          const data = await response.json();
-          setProfile(data.profile || null);
+        if(response && response.data) {
+          setProfile(response.data.profile || null);
         }
       } catch (error) {
         console.warn("Could not fetch profile during login", error);

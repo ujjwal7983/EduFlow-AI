@@ -15,8 +15,7 @@ const POPULAR_COURSES = [
   "MS in Computer Science",
   "MS in Data Science",
   "MS in Artificial Intelligence",
-  "MBBS",
-  "Other"
+  "MBBS"
 ];
 
 const DESTINATIONS = ["USA", "UK", "Canada", "Germany", "Australia", "India", "Singapore", "Ireland"];
@@ -33,7 +32,8 @@ const Onboarding = () => {
     targetCountry: profile?.targetCountry || [],
     residentCountry: profile?.residentCountry || 'India',
     experienceYears: profile?.experienceYears != null ? profile.experienceYears : '',
-    enrollmentYear: profile?.enrollmentYear || new Date().getFullYear() + 1
+    enrollmentYear: profile?.enrollmentYear || new Date().getFullYear() + 1,
+    strictCountryMatch: profile?.strictCountryMatch || false
   });
 
   const [loading, setLoading] = useState(false);
@@ -63,6 +63,7 @@ const Onboarding = () => {
         cgpaScale: parseFloat(formData.cgpaScale),
         targetCourse: formData.targetCourse,
         targetCountry: formData.targetCountry,
+        strictCountryMatch: formData.strictCountryMatch,
         residentCountry: formData.residentCountry,
         experienceYears: formData.experienceYears === '' ? 0 : parseInt(formData.experienceYears),
         enrollmentYear: parseInt(formData.enrollmentYear)
@@ -136,13 +137,16 @@ const Onboarding = () => {
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-muted)]">
                   <Briefcase className="w-5 h-5" />
                 </div>
-                <select
+                <input
+                  type="text"
                   name="targetCourse" required value={formData.targetCourse} onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl focus:ring-2 focus:ring-[var(--accent-orange)] outline-none transition-all shadow-sm appearance-none"
-                >
-                  <option value="" disabled>Select a course</option>
+                  list="course-options"
+                  placeholder="Select or type your target course"
+                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl focus:ring-2 focus:ring-[var(--accent-orange)] outline-none transition-all shadow-sm"
+                />
+                <datalist id="course-options">
                   {POPULAR_COURSES.map(course => <option key={course} value={course}>{course}</option>)}
-                </select>
+                </datalist>
               </div>
             </div>
 
@@ -152,17 +156,20 @@ const Onboarding = () => {
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-muted)]">
                   <Globe className="w-5 h-5" />
                 </div>
-                <select
+                <input
+                  type="text"
                   name="residentCountry" required value={formData.residentCountry} onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl focus:ring-2 focus:ring-[var(--accent-orange)] outline-none transition-all shadow-sm appearance-none"
-                >
+                  list="resident-country-options"
+                  placeholder="Select or type your resident country"
+                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-xl focus:ring-2 focus:ring-[var(--accent-orange)] outline-none transition-all shadow-sm"
+                />
+                <datalist id="resident-country-options">
                   <option value="India">India</option>
                   <option value="China">China</option>
                   <option value="Nigeria">Nigeria</option>
                   <option value="EU/UK">EU / UK</option>
                   <option value="USA/Canada">USA / Canada</option>
-                  <option value="Other">Other</option>
-                </select>
+                </datalist>
               </div>
             </div>
 
@@ -215,6 +222,18 @@ const Onboarding = () => {
                     </button>
                   );
                 })}
+              </div>
+              <div className="mt-4 flex items-start gap-2 bg-[var(--bg-secondary)] p-3 rounded-xl border border-[var(--border-color)] animate-in fade-in zoom-in duration-300">
+                <input 
+                  type="checkbox" 
+                  id="strictCountryMatch"
+                  checked={formData.strictCountryMatch} 
+                  onChange={(e) => setFormData({...formData, strictCountryMatch: e.target.checked})}
+                  className="w-4 h-4 mt-0.5 accent-[var(--accent-orange)] cursor-pointer"
+                />
+                <label htmlFor="strictCountryMatch" className="text-sm font-medium text-[var(--text-secondary)] cursor-pointer leading-tight">
+                  <strong className="text-[var(--text-primary)]">Strict Match:</strong> Only predict outcomes for exact checked countries (otherwise our algorithm may suggest high ROI fits from similar neighboring regions).
+                </label>
               </div>
             </div>
           </div>

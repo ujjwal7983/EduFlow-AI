@@ -22,6 +22,16 @@ const profileSchema = new mongoose.Schema(
     targetCourse: String,
     residentCountry: String,
     enrollmentYear: Number,
+    strictCountryMatch: {
+      type: Boolean,
+      default: false,
+    },
+    
+    // AI Memory Context
+    aiContextNotes: {
+      type: [String],
+      default: [],
+    },
 
     // Financial
     budget: Number,

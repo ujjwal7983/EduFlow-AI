@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import ProfileScoreCard from '../components/cards/ProfileScoreCard';
 import NudgeCard from '../components/cards/NudgeCard';
 import RecommendationCard from '../components/cards/RecommendationCard';
-import { generateUniversityMatches, generateNudges } from '../utils/dashboardHelpers';
+import { generateUniversityMatches, generateNudges, calculateTrustScore } from '../utils/dashboardHelpers';
 
 const Dashboard = () => {
   const { user, profile } = useAuth();
@@ -19,6 +19,7 @@ const Dashboard = () => {
 
   const recommendedUniversities = generateUniversityMatches(profile);
   const nudges = generateNudges(profile);
+  const trustScore = calculateTrustScore(profile);
 
   const stats = [
     { title: 'Goal Progress', value: '75%', icon: <Target className="w-6 h-6 text-blue-500" /> },
@@ -105,7 +106,7 @@ const Dashboard = () => {
 
           {/* Sidebar Column */}
           <div className="lg:col-span-4 space-y-6">
-            <ProfileScoreCard score={82} lastUpdated="Today, 9:41 AM" />
+            <ProfileScoreCard score={trustScore} lastUpdated="Today, 9:41 AM" profile={profile} />
             
             <div className="glass-card-vibrant p-6">
               <h3 className="font-bold text-[var(--text-primary)] mb-4">Urgent Nudges</h3>

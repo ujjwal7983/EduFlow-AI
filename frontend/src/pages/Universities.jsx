@@ -14,8 +14,9 @@ const Universities = () => {
   
   const [filters, setFilters] = useState({
     budget: 50000,
-    targetCountry: 'USA',
-    targetCourse: 'Computer Science'
+    targetCountry: [],
+    targetCourse: 'Computer Science',
+    strictCountryMatch: false
   });
   
   const [loading, setLoading] = useState(false);
@@ -26,8 +27,9 @@ const Universities = () => {
     if (profile) {
       setFilters(prev => ({
         ...prev,
-        targetCountry: Array.isArray(profile.targetCountry) ? profile.targetCountry[0] : profile.targetCountry || 'USA',
-        targetCourse: profile.targetCourse || 'Computer Science'
+        targetCountry: Array.isArray(profile.targetCountry) ? profile.targetCountry : (profile.targetCountry ? [profile.targetCountry] : ['USA']),
+        targetCourse: profile.targetCourse || 'Computer Science',
+        strictCountryMatch: profile.strictCountryMatch || false
       }));
     }
   }, [profile]);
@@ -98,13 +100,16 @@ const Universities = () => {
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <MapPin className="w-5 h-5 text-[var(--text-muted)]" />
                   </div>
-                  <select 
+                  <input
+                    type="text"
+                    list="uni-country-list"
                     value={filters.targetCountry}
                     onChange={(e) => setFilters({...filters, targetCountry: e.target.value})}
-                    className="w-full bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] border border-transparent focus:border-[var(--accent-blue)] transition-all font-medium appearance-none"
+                    className="w-full bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] border border-transparent focus:border-[var(--accent-blue)] transition-all font-medium"
+                    placeholder="Select or type Country"
                     required
-                  >
-                    <option value="" disabled>Select Country</option>
+                  />
+                  <datalist id="uni-country-list">
                     <option value="USA">USA</option>
                     <option value="UK">UK</option>
                     <option value="Canada">Canada</option>
@@ -112,26 +117,29 @@ const Universities = () => {
                     <option value="Germany">Germany</option>
                     <option value="Ireland">Ireland</option>
                     <option value="India">India</option>
-                  </select>
+                  </datalist>
                 </div>
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <GraduationCap className="w-5 h-5 text-[var(--text-muted)]" />
                   </div>
-                  <select 
+                  <input
+                    type="text"
+                    list="uni-course-list"
                     value={filters.targetCourse}
                     onChange={(e) => setFilters({...filters, targetCourse: e.target.value})}
-                    className="w-full bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] border border-transparent focus:border-[var(--accent-blue)] transition-all font-medium appearance-none"
+                    className="w-full bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] border border-transparent focus:border-[var(--accent-blue)] transition-all font-medium"
+                    placeholder="Select or type Major"
                     required
-                  >
-                    <option value="" disabled>Select Major</option>
+                  />
+                  <datalist id="uni-course-list">
                     <option value="Computer Science">Computer Science</option>
                     <option value="Business Administration">Business Administration</option>
                     <option value="Data Science">Data Science</option>
                     <option value="Engineering">Engineering</option>
                     <option value="Medicine">Medicine</option>
                     <option value="Arts & Humanities">Arts & Humanities</option>
-                  </select>
+                  </datalist>
                 </div>
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
@@ -225,9 +233,23 @@ const Universities = () => {
                         <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {uni.location}</span>
                         <span className="flex items-center gap-1 font-bold text-[var(--text-primary)]">{formatCurrency(uni.estimatedTuitionUSD)} / yr</span>
                       </div>
-                      <div className="bg-[var(--bg-secondary)] border border-[var(--border-color)] p-4 rounded-xl text-sm text-[var(--text-primary)] leading-relaxed mb-6 shadow-sm">
+                      <div className="bg-[var(--bg-secondary)] border border-[var(--border-color)] p-4 rounded-xl text-sm text-[var(--text-primary)] leading-relaxed mb-4 shadow-sm">
                         <strong className="text-[var(--accent-orange)] block mb-1">AI Reason:</strong>
                         {uni.whyGoodFit}
+                      </div>
+                      
+                      {/* FOMO Engine Nudge */}
+                      <div className="bg-emerald-500/10 border border-emerald-500/20 p-3.5 rounded-xl mb-6 shadow-sm">
+                         <div className="flex items-center gap-2 mb-1">
+                            <div className="relative flex h-2.5 w-2.5">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+                            </div>
+                            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Social Proof Engine</span>
+                         </div>
+                         <p className="text-xs text-[var(--text-secondary)] font-medium leading-snug">
+                           <strong className="text-[var(--text-primary)] dark:text-white">{Math.floor(uni.probabilityScore * 0.4) + (idx * 5) + 3} students</strong> from your region recently financed their education here at <strong className="text-[var(--text-primary)] dark:text-white">{(8.5 + (idx % 2)).toFixed(1)}%</strong> avg rate.
+                         </p>
                       </div>
                     </div>
 

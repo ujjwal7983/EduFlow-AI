@@ -45,7 +45,12 @@ export const chatbot = async (req, res, next) => {
     let context = "";
     if (profile) {
       const countries = Array.isArray(profile.targetCountry) ? profile.targetCountry.join(', ') : profile.targetCountry;
-      context = `[SYSTEM CONTEXT: The user has a ${profile.degree || 'degree'} with a CGPA of ${profile.cgpa || 'unknown'} (Scale ${profile.cgpaScale || 4.0}). They are targeting ${profile.targetCourse || 'unknown course'} in ${countries || 'various locations'}]. `;
+      const strict = profile.strictCountryMatch ? "MUST strictly adhere to" : "are generally aiming for";
+      context = `[SYSTEM CONTEXT: The user has a ${profile.degree || 'degree'} with a CGPA of ${profile.cgpa || 'unknown'} (Scale ${profile.cgpaScale || 4.0}). They ${strict} ${profile.targetCourse || 'unknown course'} in ${countries || 'various locations'}]. `;
+      
+      if (profile.aiContextNotes && profile.aiContextNotes.length > 0) {
+        context += `\n[RECENT IN-APP MEMORY CONTEXT: The user recently took the following actions on the platform: ${profile.aiContextNotes.join('; ')}. Use this to heavily personalize your advice if relevant.] `;
+      }
     }
 
     const fullPrompt = `${context}\nUser Message: ${message}`;
@@ -165,23 +170,25 @@ export const hiddenCosts = async (req, res, next) => {
 // University Admission Predictor
 export const universityPredictor = async (req, res, next) => {
   try {
-    const { cgpa, cgpaScale, targetCourse, targetCountry, budget } = req.body;
+    const { cgpa, cgpaScale, targetCourse, targetCountry, budget, strictCountryMatch } = req.body;
     
     // Normalize CGPA roughly
     const scale = cgpaScale || 4.0;
     const currentGpa = cgpa || (0.75 * scale); // default to 75%
+    const targetCountryArray = Array.isArray(targetCountry) ? targetCountry.join(', ') : (targetCountry || 'Global');
     
     const prompt = `
     Act as a Predictive Admissions Algorithm for International Students.
     
     Student Profile:
     - Target Course/Major: ${targetCourse || 'General Study'}
-    - Target Country/Region: ${targetCountry || 'Global'}
+    - Target Country/Region: ${targetCountryArray}
     - CGPA: ${currentGpa} out of ${scale}
     - Max Budget (Tuition): $${budget || 50000} USD
     
     Task:
-    1. Search your knowledge base for 5 actual universities in ${targetCountry || 'top study destinations'} offering ${targetCourse || 'relevant degrees'}.
+    1. Search your knowledge base for 5 actual universities offering ${targetCourse || 'relevant degrees'}.
+    ${strictCountryMatch ? `IMPORTANT: You MUST strictly only pick universities located EXACTLY in: ${targetCountryArray}. Do NOT pick any other countries.` : `You should strongly consider picking universities in ${targetCountryArray}, BUT you may also recommend highly suitable 'Reach' or 'Safe' universities in similar countries if they offer a phenomenal fit for this student's budget and CGPA.`}
     2. Filter out programs where estimated tuition vastly exceeds $${budget || 50000} USD.
     3. Calculate an EXACT fractional "probabilityScore" (0 to 100) based on their CGPA (${currentGpa}/${scale}) compared to the historical average GPA of admitted students at each university. Be highly realistic (e.g. Ivy Leagues should be < 20% for average GPAs).
     4. Categorize strictly as: "Safe" (probability > 75), "Target" (probability 40-75), or "Reach" (probability < 40).

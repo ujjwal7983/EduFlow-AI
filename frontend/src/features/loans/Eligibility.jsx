@@ -25,16 +25,16 @@ const Eligibility = ({ onAssessmentComplete }) => {
       const amount = parseFloat(formData.amount);
       const income = parseFloat(formData.cosignerIncome) || 0;
       
-      let status = 'HIGH';
-      let score = 88;
+      let status = 'PRIME';
+      let score = 750;
       
       if (amount > 5000000 && income < 1000000) {
-        status = 'MEDIUM';
-        score = 65;
+        status = 'GOOD';
+        score = 650;
       }
       if (amount > 10000000 && income < 500000) {
-        status = 'LOW';
-        score = 35;
+        status = 'FAIR';
+        score = 550;
       }
       
       const assessmentResult = {
@@ -119,21 +119,27 @@ const Eligibility = ({ onAssessmentComplete }) => {
                 <ShieldCheck className="w-32 h-32 text-emerald-500" />
               </div>
               <div className="relative z-10">
-                <div className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-widest mb-1">Probability</div>
+                <div className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-widest mb-1">Approval Tier</div>
                 <div className={`text-4xl font-black mb-4 ${
-                  result.status === 'HIGH' ? 'text-emerald-500' : 
-                  result.status === 'MEDIUM' ? 'text-yellow-500' : 'text-red-500'
+                  result.status === 'PRIME' ? 'text-emerald-500' : 
+                  result.status === 'GOOD' ? 'text-blue-500' : 'text-amber-500'
                 }`}>
                   {result.status}
                 </div>
                 
-                <div className="space-y-3 mb-6">
+                <div className="space-y-4 mb-6">
                   <div>
                     <div className="text-xs text-[var(--text-secondary)]">Estimated Max Approval</div>
                     <div className="text-xl font-bold text-[var(--text-primary)]">{formatCurrency(result.maxAmount)}</div>
                   </div>
-                  <div className="w-full bg-[var(--border-color)] rounded-full h-2">
-                     <div className={`h-2 rounded-full transition-all duration-1000 ${result.status === 'HIGH' ? 'bg-emerald-500' : result.status === 'MEDIUM' ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${result.score}%` }}></div>
+                  <div>
+                     <div className="flex justify-between text-xs font-bold mb-1">
+                        <span className="text-[var(--text-secondary)]">Trust Score</span>
+                        <span className={result.status === 'PRIME' ? 'text-emerald-500' : result.status === 'GOOD' ? 'text-blue-500' : 'text-amber-500'}>{result.score} / 850</span>
+                     </div>
+                     <div className="w-full bg-[var(--border-color)] rounded-full h-2">
+                        <div className={`h-2 rounded-full transition-all duration-1000 ${result.status === 'PRIME' ? 'bg-emerald-500' : result.status === 'GOOD' ? 'bg-blue-500' : 'bg-amber-500'}`} style={{ width: `${Math.max(0, ((result.score - 200) / 650) * 100)}%` }}></div>
+                     </div>
                   </div>
                 </div>
 

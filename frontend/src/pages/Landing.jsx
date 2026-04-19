@@ -7,7 +7,7 @@ const Landing = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="min-h-screen flex flex-col transition-colors duration-300 relative">
+    <div className="min-h-screen flex flex-col transition-colors duration-300 relative overflow-x-hidden">
       
       {/* Navigation Bar */}
       <nav className="px-6 py-5 md:px-12 flex justify-between items-center border-b border-[var(--border-color)] bg-[var(--glass-bg)] backdrop-blur-md sticky top-0 z-50">
@@ -30,7 +30,7 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col relative overflow-hidden pb-12">
+      <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col relative pb-12">
         <div className="flex flex-col lg:flex-row items-center justify-between p-6 lg:p-12 lg:pt-20 gap-10">
           
           <div className="absolute top-1/3 left-10 w-96 h-96 bg-[var(--accent-orange)] rounded-full blur-[100px] pointer-events-none opacity-10"></div>

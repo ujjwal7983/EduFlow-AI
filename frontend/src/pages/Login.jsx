@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GraduationCap, Mail, Lock, LogIn, ArrowLeft } from 'lucide-react';
+import api from '../api/axios';
+import { ENDPOINTS } from '../api/endpoints';
 
 const Login = () => {
   const { login } = useAuth();
@@ -17,14 +19,10 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      }).catch(() => null);
+      const response = await api.post(ENDPOINTS.AUTH.LOGIN, formData).catch(() => null);
 
-      if (response && response.ok) {
-        const data = await response.json();
+      if (response && response.data) {
+        const data = response.data;
         if(data.success) {
           await login(data.user, data.token);
           navigate('/dashboard');

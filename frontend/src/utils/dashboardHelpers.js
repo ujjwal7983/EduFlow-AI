@@ -190,3 +190,38 @@ export const generateNudges = (profile) => {
    
    return nudges.slice(0, 2);
 }
+
+export const calculateTrustScore = (profile) => {
+  if (!profile) return 450;
+
+  let score = 400;
+
+  if (profile.cgpa && profile.cgpaScale) {
+    const cgpaRatio = profile.cgpa / profile.cgpaScale;
+    score += Math.round(cgpaRatio * 250);
+  } else {
+    score += 100;
+  }
+
+  if (profile.experienceYears) {
+    const exp = parseInt(profile.experienceYears);
+    if (!isNaN(exp)) {
+      score += Math.min(exp * 20, 100);
+    }
+  }
+
+  const stemKeywords = ['Computer Science', 'Data Science', 'AI', 'Artificial Intelligence', 'B.Tech', 'M.Tech', 'Engineering', 'Medicine', 'MBBS'];
+  if (profile.targetCourse && stemKeywords.some(kw => profile.targetCourse.includes(kw))) {
+    score += 50;
+  } else if (profile.targetCourse) {
+    score += 25;
+  }
+
+  const targetCountries = Array.isArray(profile.targetCountry) ? profile.targetCountry : [profile.targetCountry];
+  const highRoIDests = ['USA', 'Germany', 'UK', 'Canada', 'Australia'];
+  if (targetCountries.some(c => highRoIDests.includes(c))) {
+    score += 50;
+  }
+
+  return Math.min(Math.max(score, 300), 850);
+};
