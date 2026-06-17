@@ -16,7 +16,7 @@ const app = express();
 // Core Middlewares
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://eduflow-ai-1.onrender.com"],
     credentials: true,
   })
 );
